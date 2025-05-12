@@ -1,16 +1,15 @@
 import '@/App.css'
-import { ThemeProvider } from '@/components/theme-provider'
 import Navbar from '@/components/navbar'
 import { CalculadoraForm } from '@/components/calc-form'
 
 function App() {
   return (
-    <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+    <div className='space-y-16'>
       <Navbar />
-      <div className='w-full h-full'>
+      <div>
         <CalculadoraForm />
       </div>
-    </ThemeProvider>
+    </div>
   )
 }
 
