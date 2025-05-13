@@ -8,9 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 const formSchema = z.object({
-  diametroSuccao: z.number({ coerce: true }).nonnegative(),
-  diametroRecalque: z.number({ coerce: true }).nonnegative(),
-  vazao: z.number({ coerce: true }).nonnegative("Vazão não pode ser um valor negativo."),
+  diametroSuccao: z.number({ coerce: true }).gt(0, { message: "Diâmetro deve ser maior que zero." }),
+  diametroRecalque: z.number({ coerce: true }).gt(0, { message: "Diâmetro deve ser maior que zero." }),
+  vazao: z.number({ coerce: true }).gt(0, { message: "Vazão deve ser maior que zero." }),
 })
 
 export function CalculadoraForm() {
