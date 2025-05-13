@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@/components/ui/select"
 
 const formSchema = z.object({
-  diametroSuccao: z.number().nonnegative(),
-  diametroRecalque: z.number().nonnegative(),
-  vazao: z.number().nonnegative("Vazão não pode ser um valor negativo."),
+  diametroSuccao: z.number({ coerce: true }).nonnegative(),
+  diametroRecalque: z.number({ coerce: true }).nonnegative(),
+  vazao: z.number({ coerce: true }).nonnegative("Vazão não pode ser um valor negativo."),
 })
 
 export function CalculadoraForm() {
