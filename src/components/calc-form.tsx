@@ -6,6 +6,7 @@ import { z } from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card"
 
 const formSchema = z.object({
   diametroSuccao: z.number({ coerce: true }).gt(0, { message: "Diâmetro deve ser maior que zero." }),
@@ -34,52 +35,76 @@ export function CalculadoraForm() {
           <FormField
             control={form.control}
             name="diametroSuccao"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="col-span-2 w-full">
-                <FormLabel>Diâmetro da tubulação de sucção (mm)</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="0" {...field} />
-                </FormControl>
+                <FormLabel>Diâmetro de sucção (mm)</FormLabel>
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <FormControl>
+                      <Input type="number" placeholder="0" {...field} />
+                    </FormControl>
+                  </HoverCardTrigger>
+                  {fieldState.error && (
+                    <HoverCardContent className="w-auto border-red-500">
+                      <FormMessage className="text-white" />
+                    </HoverCardContent>
+                  )}
+                </HoverCard>
                 <FormDescription className="flex justify-start">
                   Diâmetro interno da tubulação antes da bomba.
                 </FormDescription>
-                <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
             name="diametroRecalque"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="col-span-2 w-full">
-                <FormLabel>Diâmetro da tubulação de recalque (mm)</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="0" {...field} />
-                </FormControl>
+                <FormLabel>Diâmetro de recalque (mm)</FormLabel>
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <FormControl>
+                      <Input type="number" placeholder="0" {...field} />
+                    </FormControl>
+                  </HoverCardTrigger>
+                  {fieldState.error && (
+                    <HoverCardContent className="w-auto border-red-500">
+                      <FormMessage className="text-white" />
+                    </HoverCardContent>
+                  )}
+                </HoverCard>
                 <FormDescription className="flex justify-start">
                   Diâmetro interno da tubulação depois da bomba.
                 </FormDescription>
-                <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
             name="vazao"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="col-span-2 w-full">
                 <FormLabel>Vazão alvo (m³/h)</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="0" {...field} />
-                </FormControl>
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <FormControl>
+                      <Input type="number" placeholder="0" {...field} />
+                    </FormControl>
+                  </HoverCardTrigger>
+                  {fieldState.error && (
+                    <HoverCardContent className="w-auto border-red-500">
+                      <FormMessage className="text-white" />
+                    </HoverCardContent>
+                  )}
+                </HoverCard>
                 <FormDescription className="flex justify-start">
                   Vazão pretendida no reservatório.
                 </FormDescription>
-                <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="row-start-4 col-start-2 col-end-4 text-xl bg-blue-700">Calcular</Button>
+          <Button type="submit" className="row-start-4 col-start-2 col-end-4 text-xl bg-blue-700 hover:bg-blue-900 hover:cursor-pointer">Calcular</Button>
         </div>
       </form>
     </Form>
