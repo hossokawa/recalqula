@@ -18,6 +18,12 @@ const materiaisEncanacao = [
   { id: "ferro-galvanizado", nome: "Ferro galvanizado", rugosidade: 0.15, unidade: "mm" },
 ]
 
+const unidadesVazao = [
+  { id: "litro-segundo", nome: "Litro por segundo", unidade: "L/s" },
+  { id: "metro-cubico-segundo", nome: "Metro cúbico por segundo", unidade: "m³/s" },
+  { id: "metro-cubico-hora", nome: "Metro cúbico por hora", unidade: "m³/h" },
+]
+
 const formSchema = z.object({
   diametroSuccao: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
   comprimentoSuccao: z.number({ coerce: true }).gt(0, { message: "Comprimento da tubulação deve ser maior que zero." }),
@@ -30,6 +36,7 @@ const formSchema = z.object({
   alturaRecalque: z.number({ coerce: true }).min(0, { message: "Altura de recalque não pode ser negativa." }),
 
   vazao: z.number({ coerce: true }).gt(0, { message: "Vazão deve ser maior que zero." }),
+  unidadeVazao: z.string().min(1, { message: "Unidade de vazão é obrigatória." }),
   viscosidadeFluido: z.number({ coerce: true }).gt(0, { message: "Viscosidade do fluido deve ser maior que zero." }),
   densidadeFluido: z.number({ coerce: true }).gt(0, { message: "Densidade do fluido deve ser maior que zero." }),
 })
@@ -42,11 +49,14 @@ export function CalculadoraForm() {
       comprimentoSuccao: 0,
       rugosidadeSuccao: "",
       alturaSuccao: 0,
+
       diametroRecalque: 0,
       comprimentoRecalque: 0,
       rugosidadeRecalque: "",
       alturaRecalque: 0,
+
       vazao: 0,
+      unidadeVazao: "",
       viscosidadeFluido: 0,
       densidadeFluido: 0,
     },
@@ -280,6 +290,118 @@ export function CalculadoraForm() {
                     </HoverCard>
                     <FormDescription className="flex justify-start">
                       Altura do nível da bomba até a superfície do reservatório.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          <div className="p-6 rounded-md space-y-4 border-2 border-gray-200">
+            <h2 className="text-2xl font-bold text-left">Dados gerais</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="densidadeFluido"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Densidade/massa específica (kg/m³)</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Densidade do fluido.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="viscosidadeFluido"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Viscosidade dinâmica (N.s/m²)</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Viscosidade do fluido.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="vazao"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Vazão</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Valor da vazão.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="unidadeVazao"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Vazão</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione a unidade" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {unidadesVazao.map((unidade) => (
+                                <SelectItem key={unidade.nome} value={unidade.id}>
+                                  {unidade.nome} ({unidade.unidade})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Unidade de medida da vazão.
                     </FormDescription>
                   </FormItem>
                 )}
