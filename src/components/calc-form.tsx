@@ -93,7 +93,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Diâmetro interno da tubulação antes da bomba.
                     </FormDescription>
                   </FormItem>
@@ -117,7 +117,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Comprimento da tubulação antes da bomba.
                     </FormDescription>
                   </FormItem>
@@ -152,7 +152,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Material da tubulação antes da bomba. Usado para determinar a rugosidade.
                     </FormDescription>
                   </FormItem>
@@ -176,7 +176,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Altura da superfície do fluido até o nível da bomba.
                     </FormDescription>
                   </FormItem>
@@ -205,7 +205,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Diâmetro interno da tubulação depois da bomba.
                     </FormDescription>
                   </FormItem>
@@ -229,7 +229,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Comprimento da tubulação depois da bomba.
                     </FormDescription>
                   </FormItem>
@@ -264,7 +264,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Material da tubulação depois da bomba.
                     </FormDescription>
                   </FormItem>
@@ -288,7 +288,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Altura do nível da bomba até a superfície do reservatório.
                     </FormDescription>
                   </FormItem>
@@ -317,7 +317,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Densidade do fluido.
                     </FormDescription>
                   </FormItem>
@@ -341,7 +341,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Viscosidade do fluido.
                     </FormDescription>
                   </FormItem>
@@ -365,7 +365,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Valor da vazão.
                     </FormDescription>
                   </FormItem>
@@ -400,7 +400,7 @@ export function CalculadoraForm() {
                         </HoverCardContent>
                       )}
                     </HoverCard>
-                    <FormDescription className="flex justify-start">
+                    <FormDescription className="text-left">
                       Unidade de medida da vazão.
                     </FormDescription>
                   </FormItem>
