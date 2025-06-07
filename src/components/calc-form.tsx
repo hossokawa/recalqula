@@ -26,6 +26,8 @@ const formSchema = z.object({
 
   diametroRecalque: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
   comprimentoRecalque: z.number({ coerce: true }).gt(0, { message: "Comprimento da tubulação deve ser maior que zero." }),
+  rugosidadeRecalque: z.string().min(1, { message: "Material da tubulação de recalque é obrigatório." }),
+  alturaRecalque: z.number({ coerce: true }).min(0, { message: "Altura de recalque não pode ser negativa." }),
 
   vazao: z.number({ coerce: true }).gt(0, { message: "Vazão deve ser maior que zero." }),
   viscosidadeFluido: z.number({ coerce: true }).gt(0, { message: "Viscosidade do fluido deve ser maior que zero." }),
@@ -41,6 +43,9 @@ export function CalculadoraForm() {
       rugosidadeSuccao: "",
       alturaSuccao: 0,
       diametroRecalque: 0,
+      comprimentoRecalque: 0,
+      rugosidadeRecalque: "",
+      alturaRecalque: 0,
       vazao: 0,
       viscosidadeFluido: 0,
       densidadeFluido: 0,
@@ -169,54 +174,118 @@ export function CalculadoraForm() {
               />
             </div>
           </div>
-          {/* <FormField */}
-          {/*   control={form.control} */}
-          {/*   name="diametroRecalque" */}
-          {/*   render={({ field, fieldState }) => ( */}
-          {/*     <FormItem className="col-span-2 w-full"> */}
-          {/*       <FormLabel>Diâmetro de recalque (mm)</FormLabel> */}
-          {/*       <HoverCard> */}
-          {/*         <HoverCardTrigger asChild> */}
-          {/*           <FormControl> */}
-          {/*             <Input type="number" placeholder="0" {...field} /> */}
-          {/*           </FormControl> */}
-          {/*         </HoverCardTrigger> */}
-          {/*         {fieldState.error && ( */}
-          {/*           <HoverCardContent className="w-auto border-red-500"> */}
-          {/*             <FormMessage className="text-white" /> */}
-          {/*           </HoverCardContent> */}
-          {/*         )} */}
-          {/*       </HoverCard> */}
-          {/*       <FormDescription className="flex justify-start"> */}
-          {/*         Diâmetro interno da tubulação depois da bomba. */}
-          {/*       </FormDescription> */}
-          {/*     </FormItem> */}
-          {/*   )} */}
-          {/* /> */}
-          {/* <FormField */}
-          {/*   control={form.control} */}
-          {/*   name="vazao" */}
-          {/*   render={({ field, fieldState }) => ( */}
-          {/*     <FormItem className="col-span-2 w-full"> */}
-          {/*       <FormLabel>Vazão alvo (m³/h)</FormLabel> */}
-          {/*       <HoverCard> */}
-          {/*         <HoverCardTrigger asChild> */}
-          {/*           <FormControl> */}
-          {/*             <Input type="number" placeholder="0" {...field} /> */}
-          {/*           </FormControl> */}
-          {/*         </HoverCardTrigger> */}
-          {/*         {fieldState.error && ( */}
-          {/*           <HoverCardContent className="w-auto border-red-500"> */}
-          {/*             <FormMessage className="text-white" /> */}
-          {/*           </HoverCardContent> */}
-          {/*         )} */}
-          {/*       </HoverCard> */}
-          {/*       <FormDescription className="flex justify-start"> */}
-          {/*         Vazão pretendida no reservatório. */}
-          {/*       </FormDescription> */}
-          {/*     </FormItem> */}
-          {/*   )} */}
-          {/* /> */}
+          <div className="p-6 rounded-md space-y-4 border-2 border-gray-200">
+            <h2 className="text-2xl font-bold text-left">Dados de recalque</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="diametroRecalque"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Diâmetro de recalque (mm)</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Diâmetro interno da tubulação depois da bomba.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="comprimentoRecalque"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Comprimento de recalque (m)</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Comprimento da tubulação depois da bomba.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="rugosidadeRecalque"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Material da tubulação de recalque</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o material" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {materiaisEncanacao.map((material) => (
+                                <SelectItem key={material.nome} value={material.id}>
+                                  {material.nome} (ε: {material.rugosidade} {material.unidade})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Material da tubulação depois da bomba.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="alturaSuccao"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Altura de recalque (m)</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Altura do nível da bomba até a superfície do reservatório.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           <Button type="submit" className="row-start-4 col-start-2 col-end-4 text-xl bg-blue-700 hover:bg-blue-900 hover:cursor-pointer">Calcular</Button>
         </form>
       </Form>
