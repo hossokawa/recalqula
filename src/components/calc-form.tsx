@@ -275,7 +275,7 @@ export function CalculadoraForm() {
               />
               <FormField
                 control={form.control}
-                name="alturaSuccao"
+                name="alturaRecalque"
                 render={({ field, fieldState }) => (
                   <FormItem className="w-full">
                     <FormLabel>Altura de recalque (m)</FormLabel>
