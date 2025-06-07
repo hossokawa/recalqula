@@ -132,7 +132,7 @@ export function CalculadoraForm() {
                     <HoverCard>
                       <HoverCardTrigger asChild>
                         <FormControl>
-                          <Select>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <SelectTrigger className="w-full">
                               <SelectValue placeholder="Selecione o material" />
                             </SelectTrigger>
