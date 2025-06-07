@@ -27,12 +27,12 @@ const unidadesVazao = [
 const formSchema = z.object({
   diametroSuccao: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
   comprimentoSuccao: z.number({ coerce: true }).gt(0, { message: "Comprimento da tubulação deve ser maior que zero." }),
-  rugosidadeSuccao: z.string().min(1, { message: "Material da tubulação de sucção é obrigatório." }),
+  materialSuccao: z.string().min(1, { message: "Material da tubulação de sucção é obrigatório." }),
   alturaSuccao: z.number({ coerce: true }).min(0, { message: "Altura de sucção não pode ser negativa." }),
 
   diametroRecalque: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
   comprimentoRecalque: z.number({ coerce: true }).gt(0, { message: "Comprimento da tubulação deve ser maior que zero." }),
-  rugosidadeRecalque: z.string().min(1, { message: "Material da tubulação de recalque é obrigatório." }),
+  materialRecalque: z.string().min(1, { message: "Material da tubulação de recalque é obrigatório." }),
   alturaRecalque: z.number({ coerce: true }).min(0, { message: "Altura de recalque não pode ser negativa." }),
 
   vazao: z.number({ coerce: true }).gt(0, { message: "Vazão deve ser maior que zero." }),
@@ -47,12 +47,12 @@ export function CalculadoraForm() {
     defaultValues: {
       diametroSuccao: 0,
       comprimentoSuccao: 0,
-      rugosidadeSuccao: "",
+      materialSuccao: "",
       alturaSuccao: 0,
 
       diametroRecalque: 0,
       comprimentoRecalque: 0,
-      rugosidadeRecalque: "",
+      materialRecalque: "",
       alturaRecalque: 0,
 
       vazao: 0,
@@ -64,7 +64,10 @@ export function CalculadoraForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
-    const rugosidadeSuccao = materiaisEncanacao.find(mat => mat.id === values.rugosidadeSuccao)?.rugosidade
+    const rugosidadeSuccao = materiaisEncanacao.find(mat => mat.id === values.materialSuccao)?.rugosidade
+    console.log(rugosidadeSuccao)
+    const rugosidadeRecalque = materiaisEncanacao.find(mat => mat.id === values.materialRecalque)?.rugosidade
+    console.log(rugosidadeRecalque)
   }
 
   return (
@@ -125,7 +128,7 @@ export function CalculadoraForm() {
               />
               <FormField
                 control={form.control}
-                name="rugosidadeSuccao"
+                name="materialSuccao"
                 render={({ field, fieldState }) => (
                   <FormItem className="w-full">
                     <FormLabel>Material da tubulação de sucção</FormLabel>
@@ -237,7 +240,7 @@ export function CalculadoraForm() {
               />
               <FormField
                 control={form.control}
-                name="rugosidadeRecalque"
+                name="materialRecalque"
                 render={({ field, fieldState }) => (
                   <FormItem className="w-full">
                     <FormLabel>Material da tubulação de recalque</FormLabel>
