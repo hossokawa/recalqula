@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card"
 
 const formSchema = z.object({
-  diametroSuccao: z.number({ coerce: true }).gt(0, { message: "Diâmetro deve ser maior que zero." }),
-  diametroRecalque: z.number({ coerce: true }).gt(0, { message: "Diâmetro deve ser maior que zero." }),
+  diametroSuccao: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
+  diametroRecalque: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
   vazao: z.number({ coerce: true }).gt(0, { message: "Vazão deve ser maior que zero." }),
 })
 
