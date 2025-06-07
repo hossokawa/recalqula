@@ -6,12 +6,29 @@ import { z } from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+const materiaisEncanacao = [
+  { id: "ferro-fundido", nome: "Ferro fundido", rugosidade: 0.26, unidade: "mm" },
+  { id: "pvc-plastico", nome: "PVC/Plástico", rugosidade: 0.0015, unidade: "mm" },
+  { id: "cobre-bronze", nome: "Cobre/bronze", rugosidade: 0.0015, unidade: "mm" },
+  { id: "concreto-liso", nome: "Concreto (liso)", rugosidade: 0.3, unidade: "mm" },
+  { id: "aco-comercial", nome: "Aço comercial", rugosidade: 0.045, unidade: "mm" },
+  { id: "ferro-galvanizado", nome: "Ferro galvanizado", rugosidade: 0.15, unidade: "mm" },
+]
 
 const formSchema = z.object({
   diametroSuccao: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
+  comprimentoSuccao: z.number({ coerce: true }).gt(0, { message: "Comprimento da tubulação deve ser maior que zero." }),
+  rugosidadeSuccao: z.string().min(1, { message: "Material da tubulação de sucção é obrigatório." }),
+
   diametroRecalque: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
+  comprimentoRecalque: z.number({ coerce: true }).gt(0, { message: "Comprimento da tubulação deve ser maior que zero." }),
+
   vazao: z.number({ coerce: true }).gt(0, { message: "Vazão deve ser maior que zero." }),
+  viscosidadeFluido: z.number({ coerce: true }).gt(0, { message: "Viscosidade do fluido deve ser maior que zero." }),
+  densidadeFluido: z.number({ coerce: true }).gt(0, { message: "Densidade do fluido deve ser maior que zero." }),
 })
 
 export function CalculadoraForm() {
@@ -19,94 +36,164 @@ export function CalculadoraForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       diametroSuccao: 0,
+      comprimentoSuccao: 0,
+      rugosidadeSuccao: "",
       diametroRecalque: 0,
       vazao: 0,
+      viscosidadeFluido: 0,
+      densidadeFluido: 0,
     },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
+    const rugosidadeSuccao = materiaisEncanacao.find(mat => mat.id === values.rugosidadeSuccao)?.rugosidade
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-4 grid-rows-4 gap-4 space-y-4">
-          <FormField
-            control={form.control}
-            name="diametroSuccao"
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-2 w-full">
-                <FormLabel>Diâmetro de sucção (mm)</FormLabel>
-                <HoverCard>
-                  <HoverCardTrigger asChild>
-                    <FormControl>
-                      <Input type="number" placeholder="0" {...field} />
-                    </FormControl>
-                  </HoverCardTrigger>
-                  {fieldState.error && (
-                    <HoverCardContent className="w-auto border-red-500">
-                      <FormMessage className="text-white" />
-                    </HoverCardContent>
-                  )}
-                </HoverCard>
-                <FormDescription className="flex justify-start">
-                  Diâmetro interno da tubulação antes da bomba.
-                </FormDescription>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="diametroRecalque"
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-2 w-full">
-                <FormLabel>Diâmetro de recalque (mm)</FormLabel>
-                <HoverCard>
-                  <HoverCardTrigger asChild>
-                    <FormControl>
-                      <Input type="number" placeholder="0" {...field} />
-                    </FormControl>
-                  </HoverCardTrigger>
-                  {fieldState.error && (
-                    <HoverCardContent className="w-auto border-red-500">
-                      <FormMessage className="text-white" />
-                    </HoverCardContent>
-                  )}
-                </HoverCard>
-                <FormDescription className="flex justify-start">
-                  Diâmetro interno da tubulação depois da bomba.
-                </FormDescription>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="vazao"
-            render={({ field, fieldState }) => (
-              <FormItem className="col-span-2 w-full">
-                <FormLabel>Vazão alvo (m³/h)</FormLabel>
-                <HoverCard>
-                  <HoverCardTrigger asChild>
-                    <FormControl>
-                      <Input type="number" placeholder="0" {...field} />
-                    </FormControl>
-                  </HoverCardTrigger>
-                  {fieldState.error && (
-                    <HoverCardContent className="w-auto border-red-500">
-                      <FormMessage className="text-white" />
-                    </HoverCardContent>
-                  )}
-                </HoverCard>
-                <FormDescription className="flex justify-start">
-                  Vazão pretendida no reservatório.
-                </FormDescription>
-              </FormItem>
-            )}
-          />
+    <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Calculadora de potência de bomba</h2>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="p-6 rounded-md space-y-4 bg-red-200">
+            <h2 className="text-2xl font-bold text-left">Dados de sucção</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="diametroSuccao"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Diâmetro de sucção (mm)</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Diâmetro interno da tubulação antes da bomba.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="comprimentoSuccao"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Comprimento de sucção (m)</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Comprimento da tubulação antes da bomba.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="rugosidadeSuccao"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Material da tubulação de sucção</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Select>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o material" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {materiaisEncanacao.map((material) => (
+                                <SelectItem key={material.nome} value={material.id}>
+                                  {material.nome} (ε: {material.rugosidade} {material.unidade})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Material da tubulação antes da bomba. Usado para determinar a rugosidade.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          {/* <FormField */}
+          {/*   control={form.control} */}
+          {/*   name="diametroRecalque" */}
+          {/*   render={({ field, fieldState }) => ( */}
+          {/*     <FormItem className="col-span-2 w-full"> */}
+          {/*       <FormLabel>Diâmetro de recalque (mm)</FormLabel> */}
+          {/*       <HoverCard> */}
+          {/*         <HoverCardTrigger asChild> */}
+          {/*           <FormControl> */}
+          {/*             <Input type="number" placeholder="0" {...field} /> */}
+          {/*           </FormControl> */}
+          {/*         </HoverCardTrigger> */}
+          {/*         {fieldState.error && ( */}
+          {/*           <HoverCardContent className="w-auto border-red-500"> */}
+          {/*             <FormMessage className="text-white" /> */}
+          {/*           </HoverCardContent> */}
+          {/*         )} */}
+          {/*       </HoverCard> */}
+          {/*       <FormDescription className="flex justify-start"> */}
+          {/*         Diâmetro interno da tubulação depois da bomba. */}
+          {/*       </FormDescription> */}
+          {/*     </FormItem> */}
+          {/*   )} */}
+          {/* /> */}
+          {/* <FormField */}
+          {/*   control={form.control} */}
+          {/*   name="vazao" */}
+          {/*   render={({ field, fieldState }) => ( */}
+          {/*     <FormItem className="col-span-2 w-full"> */}
+          {/*       <FormLabel>Vazão alvo (m³/h)</FormLabel> */}
+          {/*       <HoverCard> */}
+          {/*         <HoverCardTrigger asChild> */}
+          {/*           <FormControl> */}
+          {/*             <Input type="number" placeholder="0" {...field} /> */}
+          {/*           </FormControl> */}
+          {/*         </HoverCardTrigger> */}
+          {/*         {fieldState.error && ( */}
+          {/*           <HoverCardContent className="w-auto border-red-500"> */}
+          {/*             <FormMessage className="text-white" /> */}
+          {/*           </HoverCardContent> */}
+          {/*         )} */}
+          {/*       </HoverCard> */}
+          {/*       <FormDescription className="flex justify-start"> */}
+          {/*         Vazão pretendida no reservatório. */}
+          {/*       </FormDescription> */}
+          {/*     </FormItem> */}
+          {/*   )} */}
+          {/* /> */}
           <Button type="submit" className="row-start-4 col-start-2 col-end-4 text-xl bg-blue-700 hover:bg-blue-900 hover:cursor-pointer">Calcular</Button>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </div>
   )
 }
