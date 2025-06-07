@@ -22,6 +22,7 @@ const formSchema = z.object({
   diametroSuccao: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
   comprimentoSuccao: z.number({ coerce: true }).gt(0, { message: "Comprimento da tubulação deve ser maior que zero." }),
   rugosidadeSuccao: z.string().min(1, { message: "Material da tubulação de sucção é obrigatório." }),
+  alturaSuccao: z.number({ coerce: true }).min(0, { message: "Altura de sucção não pode ser negativa." }),
 
   diametroRecalque: z.number({ coerce: true }).gt(0, { message: "Diâmetro da tubulação deve ser maior que zero." }),
   comprimentoRecalque: z.number({ coerce: true }).gt(0, { message: "Comprimento da tubulação deve ser maior que zero." }),
@@ -38,6 +39,7 @@ export function CalculadoraForm() {
       diametroSuccao: 0,
       comprimentoSuccao: 0,
       rugosidadeSuccao: "",
+      alturaSuccao: 0,
       diametroRecalque: 0,
       vazao: 0,
       viscosidadeFluido: 0,
@@ -137,6 +139,30 @@ export function CalculadoraForm() {
                     </HoverCard>
                     <FormDescription className="flex justify-start">
                       Material da tubulação antes da bomba. Usado para determinar a rugosidade.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="alturaSuccao"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Altura de sucção (m)</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Input type="number" placeholder="0" step="any" {...field} />
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="flex justify-start">
+                      Altura da superfície do fluido até o nível da bomba.
                     </FormDescription>
                   </FormItem>
                 )}
