@@ -72,7 +72,7 @@ export function CalculadoraForm() {
       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Calculadora de potência de bomba</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="p-6 rounded-md space-y-4 bg-red-200">
+          <div className="p-6 rounded-md space-y-4 border-2 border-gray-200">
             <h2 className="text-2xl font-bold text-left">Dados de sucção</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
