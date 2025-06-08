@@ -25,7 +25,7 @@ export const acessoriosTubulacao = [
   { id: "te-saida-bilateral", nome: "Tê, saída bilateral", valor_k: 1.8 },
   { id: "juncao", nome: "Junção", valor_k: 0.4 },
   { id: "crivo", nome: "Crivo", valor_k: 0.75 },
-  { id: "Bocais", nome: "Bocais", valor_k: 2.75 },
+  { id: "bocais", nome: "Bocais", valor_k: 2.75 },
   { id: "ampliacao-gradual", nome: "Ampliação gradual", valor_k: 0.3 },
   { id: "reducao-gradual", nome: "Redução gradual", valor_k: 0.15 },
 ]
