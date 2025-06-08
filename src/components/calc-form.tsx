@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 
 const cn = (...classes) => classes.filter(Boolean).join(" ")
@@ -20,6 +20,15 @@ const materiaisEncanacao = [
   { id: "concreto-liso", nome: "Concreto (liso)", rugosidade: 0.3, unidade: "mm" },
   { id: "aco-comercial", nome: "Aço comercial", rugosidade: 0.045, unidade: "mm" },
   { id: "ferro-galvanizado", nome: "Ferro galvanizado", rugosidade: 0.15, unidade: "mm" },
+]
+
+const fluidos = [
+  { id: "agua_20c", nome: "Água (20°C)", densidade: 998, viscosidade_dinamica: 0.001002 },
+  { id: "oleo_iso_vg46", nome: "Óleo ISO VG 46", densidade: 870, viscosidade_dinamica: 0.041 },
+  { id: "oleo_sae_30", nome: "Óleo SAE 30", densidade: 875, viscosidade_dinamica: 0.29 },
+  { id: "glicerina", nome: "Glicerina", densidade: 1260, viscosidade_dinamica: 1.49 },
+  { id: "oleo_vegetal", nome: "Óleo vegetal", densidade: 920, viscosidade_dinamica: 0.065 },
+  { id: "outro", nome: "Outro", densidade: 0, viscosidade_dinamica: 0 },
 ]
 
 const unidadesVazao = [
@@ -73,10 +82,11 @@ const formSchema = z.object({
     quantidade: z.number().min(1)
   })),
 
-  vazao: z.number({ coerce: true }).gt(0, { message: "Vazão deve ser maior que zero." }),
-  unidadeVazao: z.string().min(1, { message: "Unidade de vazão é obrigatória." }),
+  fluido: z.string().min(1, { message: "Fluido usado no sistema é obrigatório." }),
   viscosidadeFluido: z.number({ coerce: true }).gt(0, { message: "Viscosidade do fluido deve ser maior que zero." }),
   densidadeFluido: z.number({ coerce: true }).gt(0, { message: "Densidade do fluido deve ser maior que zero." }),
+  vazao: z.number({ coerce: true }).gt(0, { message: "Vazão deve ser maior que zero." }),
+  unidadeVazao: z.string().min(1, { message: "Unidade de vazão é obrigatória." }),
 })
 
 export function CalculadoraForm() {
@@ -96,10 +106,11 @@ export function CalculadoraForm() {
       alturaRecalque: 0,
       acessoriosRecalque: [],
 
-      vazao: 0,
-      unidadeVazao: "",
+      fluido: "agua_20c",
       viscosidadeFluido: 0,
       densidadeFluido: 0,
+      vazao: 0,
+      unidadeVazao: "",
     },
   })
 
@@ -112,8 +123,6 @@ export function CalculadoraForm() {
     },
   })
 
-  const [formPrincipalEnviado, setFormPrincipalEnviado] = useState(false)
-
   const { fields: camposAcessoriosSuccao, append: appendSuccao, update: updateSuccao, remove: removeSuccao } = useFieldArray({
     control: form.control,
     name: "acessoriosSuccao"
@@ -123,8 +132,24 @@ export function CalculadoraForm() {
     name: "acessoriosRecalque"
   })
 
+  const [formPrincipalEnviado, setFormPrincipalEnviado] = useState(false)
   const [modalAcessoriosSuccaoAberto, setModalAcessoriosSuccaoAberto] = useState(false)
   const [modalAcessoriosRecalqueAberto, setModalAcessoriosRecalqueAberto] = useState(false)
+  const [outroFluido, setOutroFluido] = useState(false)
+
+  useEffect(() => {
+    const idFluidoSelecionado = form.getValues("fluido")
+    if (idFluidoSelecionado && idFluidoSelecionado !== "outro") {
+      setOutroFluido(false)
+      const fluidoSelecionado = fluidos.find(f => f.id === idFluidoSelecionado)
+      if (fluidoSelecionado) {
+        form.setValue("densidadeFluido", fluidoSelecionado.densidade)
+        form.setValue("viscosidadeFluido", fluidoSelecionado.viscosidade_dinamica)
+      }
+    } else {
+      setOutroFluido(true)
+    }
+  }, [form])
 
   function handleAcessorioSuccao(data: z.infer<typeof acessorioSchema>) {
     const idxAcessorioExistente = camposAcessoriosSuccao.findIndex((item) => item.idAcessorio === data.idAcessorio)
@@ -653,6 +678,55 @@ export function CalculadoraForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
+                name="fluido"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full md:col-span-2">
+                    <FormLabel>Fluido</FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <FormControl>
+                          <Select onValueChange={(value) => {
+                            field.onChange(value)
+                            const fluidoSelecionado = fluidos.find(f => f.id === value)
+                            if (fluidoSelecionado) {
+                              if (fluidoSelecionado.id === "outro") {
+                                setOutroFluido(true)
+                                form.setValue("densidadeFluido", 0)
+                                form.setValue("viscosidadeFluido", 0)
+                              } else {
+                                setOutroFluido(false)
+                                form.setValue("densidadeFluido", fluidoSelecionado.densidade)
+                                form.setValue("viscosidadeFluido", fluidoSelecionado.viscosidade_dinamica)
+                              }
+                            }
+                          }} defaultValue={field.value}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o fluido do sistema" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {fluidos.map((fluido) => (
+                                <SelectItem key={fluido.nome} value={fluido.id}>
+                                  {fluido.nome}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </HoverCardTrigger>
+                      {fieldState.error && (
+                        <HoverCardContent className="w-auto border-red-500">
+                          <FormMessage />
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
+                    <FormDescription className="text-left">
+                      Fluido sendo transportado pelo sistema.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="densidadeFluido"
                 render={({ field, fieldState }) => (
                   <FormItem className="w-full">
@@ -660,7 +734,7 @@ export function CalculadoraForm() {
                     <HoverCard>
                       <HoverCardTrigger asChild>
                         <FormControl>
-                          <Input type="number" placeholder="0" step="any" {...field} />
+                          <Input type="number" placeholder="0" step="any" disabled={!outroFluido} {...field} />
                         </FormControl>
                       </HoverCardTrigger>
                       {fieldState.error && (
@@ -684,7 +758,7 @@ export function CalculadoraForm() {
                     <HoverCard>
                       <HoverCardTrigger asChild>
                         <FormControl>
-                          <Input type="number" placeholder="0" step="any" {...field} />
+                          <Input type="number" placeholder="0" step="any" disabled={!outroFluido} {...field} />
                         </FormControl>
                       </HoverCardTrigger>
                       {fieldState.error && (
