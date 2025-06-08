@@ -8,5 +8,6 @@ yarn dev
 ```
 ## Screenshots
 ![Seção de sucção](./screenshots/calculadora_1.png)
-![Seção de recalque/geral](./screenshots/calculadora_2.png)
-![Modal de acessórios](./screenshots/calculadora_3.png)
+![Modal de acessórios](./screenshots/calculadora_2.png)
+![Seção de recalque/geral](./screenshots/calculadora_gerais.png)
+![Opções de líquidos](./screenshots/calculadora_4.png)
