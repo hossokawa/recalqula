@@ -6,7 +6,6 @@ git clone https://github.com/hossokawa/recalqula.git
 cd recalqula
 yarn dev
 ```
-```
 ## Screenshots
 ![Seção de sucção](./screenshots/calculadora_1.png)
 ![Seção de recalque/geral](./screenshots/calculadora_2.png)
