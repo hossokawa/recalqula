@@ -6,7 +6,6 @@ import { z } from "zod"
 import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import { materiaisTubulacao } from "@/constants"
 import { acessorioSchema, formSchema } from "@/schemas"
 import { DadosSuccao } from "./dados-succao"
 import { AcessoriosSuccao } from "./acessorios-succao"
@@ -57,7 +56,6 @@ export function CalculadoraForm() {
     name: "acessoriosRecalque"
   })
 
-  const [formPrincipalEnviado, setFormPrincipalEnviado] = useState(false)
   const [modalAcessoriosSuccaoAberto, setModalAcessoriosSuccaoAberto] = useState(false)
   const [modalAcessoriosRecalqueAberto, setModalAcessoriosRecalqueAberto] = useState(false)
 
@@ -99,9 +97,7 @@ export function CalculadoraForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     setFormPrincipalEnviado(true)
     console.log(values)
-    const rugosidadeSuccao = materiaisTubulacao.find(mat => mat.id === values.materialSuccao)?.rugosidade
     console.log(rugosidadeSuccao)
-    const rugosidadeRecalque = materiaisTubulacao.find(mat => mat.id === values.materialRecalque)?.rugosidade
     console.log(rugosidadeRecalque)
   }
 
